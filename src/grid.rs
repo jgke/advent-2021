@@ -114,7 +114,7 @@ impl<Cell: fmt::Display> fmt::Display for Grid<Cell> {
             for cell in row {
                 write!(f, "{}", cell)?;
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
         write!(f, "")
     }

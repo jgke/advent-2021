@@ -11,8 +11,8 @@ enum Command {
 impl<T: AsRef<str>> From<T> for Command {
     fn from(f: T) -> Command {
         let s = f.as_ref();
-        let count: i32 = s.split(" ").nth(1).unwrap().parse().unwrap();
-        match s.split(" ").next().unwrap() {
+        let count: i32 = s.split(' ').nth(1).unwrap().parse().unwrap();
+        match s.split(' ').next().unwrap() {
             "forward" => Command::Forward(count),
             "up" => Command::Up(count),
             "down" => Command::Down(count),

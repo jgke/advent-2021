@@ -59,17 +59,14 @@ fn parse_tree<I: Iterator<Item = char>>(
     parse_tree(res, input, expected)
 }
 
-fn ten_impl(input: &Parsed, day_2: bool) -> usize {
+fn ten_impl(input: &[Vec<char>], day_2: bool) -> usize {
     if !day_2 {
         let mut counts: HashMap<char, usize> = HashMap::new();
         for row in input {
             let mut res = Vec::new();
             let parsed = parse_tree(&mut res, &mut row.iter().copied().peekable(), '#');
-            match parsed {
-                Err(ParseError::Corrupted(c)) => {
-                    *counts.entry(c).or_default() += 1;
-                }
-                _ => {}
+            if let Err(ParseError::Corrupted(c)) = parsed {
+                *counts.entry(c).or_default() += 1;
             }
         }
 
@@ -83,28 +80,25 @@ fn ten_impl(input: &Parsed, day_2: bool) -> usize {
     for row in input {
         let mut res = Vec::new();
         let parsed = parse_tree(&mut res, &mut row.iter().copied().peekable(), '#');
-        match parsed {
-            Err(ParseError::Incomplete(v)) => {
-                let mut res = 0;
-                for c in v {
-                    res *= 5;
-                    res += match c {
-                        ')' => 1,
-                        ']' => 2,
-                        '}' => 3,
-                        '>' => 4,
-                        _ => unreachable!(),
-                    };
-                }
-                counts.push(res);
+        if let Err(ParseError::Incomplete(v)) = parsed {
+            let mut res = 0;
+            for c in v {
+                res *= 5;
+                res += match c {
+                    ')' => 1,
+                    ']' => 2,
+                    '}' => 3,
+                    '>' => 4,
+                    _ => unreachable!(),
+                };
             }
-            _ => {}
+            counts.push(res);
         }
     }
 
-    counts.sort();
+    counts.sort_unstable();
 
-    return counts[counts.len() / 2];
+    counts[counts.len() / 2]
 }
 
 fn parse<S: AsRef<str>>(input: &[S]) -> Parsed {

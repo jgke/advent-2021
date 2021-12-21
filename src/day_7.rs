@@ -2,11 +2,11 @@ use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
 
-fn seven_cost(input: &Vec<i32>, pos: i32) -> usize {
+fn seven_cost(input: &[i32], pos: i32) -> usize {
     input.iter().map(|x| (*x - pos).abs() as usize).sum()
 }
 
-fn seven_exp_cost(input: &Vec<i32>, pos: i32) -> usize {
+fn seven_exp_cost(input: &[i32], pos: i32) -> usize {
     input
         .iter()
         .map(|x| {
@@ -16,7 +16,7 @@ fn seven_exp_cost(input: &Vec<i32>, pos: i32) -> usize {
         .sum()
 }
 
-fn seven_impl(input: &Vec<i32>, exp: bool) -> usize {
+fn seven_impl(input: &[i32], exp: bool) -> usize {
     let min_pos = *input.iter().min().unwrap();
     let max_pos = *input.iter().max().unwrap();
 
@@ -36,7 +36,7 @@ fn seven_impl(input: &Vec<i32>, exp: bool) -> usize {
 fn parse<S: AsRef<str>>(input: &[S]) -> Vec<i32> {
     input
         .iter()
-        .flat_map(|s| s.as_ref().split(","))
+        .flat_map(|s| s.as_ref().split(','))
         .map(|s| s.parse().unwrap())
         .collect()
 }

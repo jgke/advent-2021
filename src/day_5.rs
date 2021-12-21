@@ -38,27 +38,23 @@ impl Line {
                 (self.start.0..=self.end.0)
                     .map(|x| (x, self.start.1))
                     .collect()
+            } else if self.neg_k() {
+                (self.end.1..=self.start.1)
+                    .map(|y| (self.start.0, y))
+                    .collect()
             } else {
-                if self.neg_k() {
-                    (self.end.1..=self.start.1)
-                        .map(|y| (self.start.0, y))
-                        .collect()
-                } else {
-                    (self.start.1..=self.end.1)
-                        .map(|y| (self.start.0, y))
-                        .collect()
-                }
+                (self.start.1..=self.end.1)
+                    .map(|y| (self.start.0, y))
+                    .collect()
             }
+        } else if self.neg_k() {
+            (self.start.0..=self.end.0)
+                .map(|x| (x, self.start.1 - (x - self.start.0)))
+                .collect()
         } else {
-            if self.neg_k() {
-                (self.start.0..=self.end.0)
-                    .map(|x| (x, self.start.1 - (x - self.start.0)))
-                    .collect()
-            } else {
-                (self.start.0..=self.end.0)
-                    .map(|x| (x, self.start.1 + (x - self.start.0)))
-                    .collect()
-            }
+            (self.start.0..=self.end.0)
+                .map(|x| (x, self.start.1 + (x - self.start.0)))
+                .collect()
         }
     }
 }
@@ -99,7 +95,7 @@ fn parse<S: AsRef<str>>(input: &[S]) -> Vec<Line> {
             let pairs: Vec<Vec<i32>> = s
                 .as_ref()
                 .split(" -> ")
-                .map(|s| s.split(",").map(|s| s.parse().unwrap()).collect())
+                .map(|s| s.split(',').map(|s| s.parse().unwrap()).collect())
                 .collect();
 
             Line::new(((pairs[0][0], pairs[0][1]), (pairs[1][0], pairs[1][1])))

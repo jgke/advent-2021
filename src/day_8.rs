@@ -84,7 +84,7 @@ fn calc_map(numbers: &[u8]) -> HashMap<u8, u8> {
     reversed_translate_map
 }
 
-fn eight_impl(input: &Vec<(Vec<u8>, Vec<u8>)>, day_2: bool) -> usize {
+fn eight_impl(input: &[(Vec<u8>, Vec<u8>)], day_2: bool) -> usize {
     if !day_2 {
         return input
             .iter()
@@ -115,7 +115,7 @@ fn eight_impl(input: &Vec<(Vec<u8>, Vec<u8>)>, day_2: bool) -> usize {
 }
 
 fn parse_num<S: AsRef<str>>(s: S) -> u8 {
-    s.as_ref().chars().map(|c| 1 << (c as u8) - 'a' as u8).sum()
+    s.as_ref().chars().map(|c| 1 << ((c as u8) - b'a')).sum()
 }
 
 fn parse<S: AsRef<str>>(input: &[S]) -> Vec<(Vec<u8>, Vec<u8>)> {
@@ -126,8 +126,8 @@ fn parse<S: AsRef<str>>(input: &[S]) -> Vec<(Vec<u8>, Vec<u8>)> {
     i.iter()
         .map(|row| {
             (
-                row[0].split(" ").map(|s| parse_num(s)).collect(),
-                row[1].split(" ").map(|s| parse_num(s)).collect(),
+                row[0].split(' ').map(parse_num).collect(),
+                row[1].split(' ').map(parse_num).collect(),
             )
         })
         .collect()

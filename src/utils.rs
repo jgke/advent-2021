@@ -3,7 +3,7 @@ pub fn as_groups(lines: Vec<String>) -> Vec<Vec<String>> {
     let mut grouped = Vec::new();
     let mut groups = Vec::new();
     for line in lines {
-        if line.is_empty() && grouped.len() > 0 {
+        if line.is_empty() && !grouped.is_empty() {
             groups.push(grouped);
             grouped = Vec::new();
         } else {
@@ -11,7 +11,7 @@ pub fn as_groups(lines: Vec<String>) -> Vec<Vec<String>> {
         }
     }
 
-    if grouped.len() > 0 {
+    if !grouped.is_empty() {
         groups.push(grouped);
     }
 

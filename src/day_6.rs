@@ -11,26 +11,23 @@ fn six_impl(input: &HashMap<i32, usize>, days: i32) -> usize {
 
         for (k, v) in fish {
             if k == 0 {
-                new_input.entry(8).and_modify(|e| *e = *e + v).or_insert(v);
-                new_input.entry(6).and_modify(|e| *e = *e + v).or_insert(v);
+                new_input.entry(8).and_modify(|e| *e += v).or_insert(v);
+                new_input.entry(6).and_modify(|e| *e += v).or_insert(v);
             } else {
-                new_input
-                    .entry(k - 1)
-                    .and_modify(|e| *e = *e + v)
-                    .or_insert(v);
+                new_input.entry(k - 1).and_modify(|e| *e += v).or_insert(v);
             }
         }
 
         fish = new_input;
     }
 
-    fish.values().map(|i| *i).sum()
+    fish.values().copied().sum()
 }
 
 fn parse<S: AsRef<str>>(input: &[S]) -> HashMap<i32, usize> {
     let nums: Vec<i32> = input
         .iter()
-        .flat_map(|s| s.as_ref().split(","))
+        .flat_map(|s| s.as_ref().split(','))
         .map(|s| s.parse().unwrap())
         .collect();
     let mut map = HashMap::new();

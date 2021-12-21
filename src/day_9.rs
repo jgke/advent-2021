@@ -77,9 +77,9 @@ fn nine_impl(input: &Parsed, day_2: bool) -> i32 {
             }
         }
     }
-    basins.sort();
+    basins.sort_unstable();
     basins.reverse();
-    basins.into_iter().take(3).fold(1, |a, b| a * b)
+    basins.into_iter().take(3).product()
 }
 
 fn parse<S: AsRef<str>>(input: &[S]) -> Parsed {

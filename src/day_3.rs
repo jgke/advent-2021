@@ -56,9 +56,9 @@ fn is_false_most_common_in_index(report: &[Vec<bool>], i: usize) -> bool {
     counts.0 < counts.1
 }
 
-fn gamma(report: &Vec<Vec<bool>>) -> i32 {
+fn gamma(report: &[Vec<bool>]) -> i32 {
     let rowlen = report[0].len();
-    let mut current_sets = report.clone();
+    let mut current_sets = report.to_vec();
 
     for i in 0..rowlen {
         if current_sets.len() == 1 {
@@ -75,9 +75,9 @@ fn gamma(report: &Vec<Vec<bool>>) -> i32 {
     vec_to_num(&current_sets[0])
 }
 
-fn epsilon(report: &Vec<Vec<bool>>) -> i32 {
+fn epsilon(report: &[Vec<bool>]) -> i32 {
     let rowlen = report[0].len();
-    let mut current_sets = report.clone();
+    let mut current_sets = report.to_vec();
 
     for i in 0..rowlen {
         if current_sets.len() == 1 {

@@ -3,9 +3,9 @@ use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
 
-fn get_victory_row(board: &Vec<Vec<usize>>, draws: &HashSet<usize>) -> Option<usize> {
+fn get_victory_row(board: &[Vec<usize>], draws: &HashSet<usize>) -> Option<usize> {
     for row in board {
-        if row.iter().all(|i| draws.contains(&i)) {
+        if row.iter().all(|i| draws.contains(i)) {
             return Some(
                 board[0..5]
                     .iter()
@@ -21,7 +21,7 @@ fn parse_board<S: AsRef<str>, I: Iterator<Item = S>>(i: I) -> Vec<Vec<usize>> {
     let rows: Vec<Vec<usize>> = i
         .map(|s| {
             s.as_ref()
-                .split(" ")
+                .split(' ')
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse().unwrap())
                 .collect()
@@ -39,7 +39,7 @@ fn parse_board<S: AsRef<str>, I: Iterator<Item = S>>(i: I) -> Vec<Vec<usize>> {
 fn four_impl<S: AsRef<str> + Sized>(input: &[S], wait_last: bool) -> usize {
     let draws: Vec<usize> = input[0]
         .as_ref()
-        .split(",")
+        .split(',')
         .map(|s| s.parse().unwrap())
         .collect();
 
@@ -47,7 +47,7 @@ fn four_impl<S: AsRef<str> + Sized>(input: &[S], wait_last: bool) -> usize {
     let mut i = 2;
 
     while i < input.len() {
-        boards.push(parse_board((&input[i..(i + 5)]).into_iter()));
+        boards.push(parse_board((&input[i..(i + 5)]).iter()));
         i += 6;
     }
 
