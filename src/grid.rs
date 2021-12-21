@@ -6,9 +6,15 @@ pub struct Grid<Cell> {
 }
 
 #[allow(dead_code)]
-impl<Cell: std::fmt::Debug> Grid<Cell> {
+impl<Cell> Grid<Cell> {
     pub fn new(elems: Vec<Vec<Cell>>) -> Grid<Cell> {
         Grid { elems }
+    }
+
+    pub fn new_with<F: FnMut(usize, usize) -> Cell>(x: usize, y: usize, mut f: F) -> Grid<Cell> {
+        Grid {
+            elems: (0..y).map(|y| (0..x).map(|x| f(x, y)).collect()).collect(),
+        }
     }
 
     pub fn col_size(&self) -> usize {
@@ -16,17 +22,56 @@ impl<Cell: std::fmt::Debug> Grid<Cell> {
     }
 
     pub fn row_size(&self) -> usize {
-        self.elems[0].len()
+        self.elems.get(0).map(|row| row.len()).unwrap_or(0)
     }
 
-    pub fn get(&self, x: i32, y: i32) -> Option<&Cell> {
-        if x < 0 || y < 0 {
-            None
-        } else {
-            self.elems
-                .get(y as usize)
-                .and_then(|col| col.get(x as usize))
-        }
+    pub fn get(&self, x: usize, y: usize) -> Option<&Cell> {
+        self.elems
+            .get(y as usize)
+            .and_then(|col| col.get(x as usize))
+    }
+
+    pub fn set(&mut self, x: usize, y: usize, mut new: Cell) -> Option<Cell> {
+        self.elems.get_mut(y as usize).and_then(|col| {
+            let prev = col.get_mut(x as usize)?;
+            std::mem::swap(prev, &mut new);
+            Some(new)
+        })
+    }
+
+    fn legal(&self, x: i32, y: i32) -> bool {
+        y >= 0 && y < self.col_size() as i32 && x >= 0 && x < self.row_size() as i32
+    }
+
+    pub fn nbors(&self, x: usize, y: usize) -> Vec<(usize, usize)> {
+        let x = x as i32;
+        let y = y as i32;
+        [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
+            .iter()
+            .copied()
+            .filter(|(x, y)| self.legal(*x, *y))
+            .map(|(x, y)| (x as usize, y as usize))
+            .collect()
+    }
+
+    pub fn diag_nbors(&self, x: usize, y: usize) -> Vec<(usize, usize)> {
+        let x = x as i32;
+        let y = y as i32;
+        [
+            (x - 1, y),
+            (x + 1, y),
+            (x, y - 1),
+            (x, y + 1),
+            (x - 1, y - 1),
+            (x - 1, y + 1),
+            (x + 1, y - 1),
+            (x + 1, y + 1),
+        ]
+        .iter()
+        .copied()
+        .filter(|(x, y)| self.legal(*x, *y))
+        .map(|(x, y)| (x as usize, y as usize))
+        .collect()
     }
 
     pub fn ray<'a>(
@@ -44,17 +89,22 @@ impl<Cell: std::fmt::Debug> Grid<Cell> {
             return None;
         }
 
-        while x >= 0
-            && y >= 0
-            && x < self.row_size() as i32
-            && y < self.col_size() as i32
-            && cont(&self.elems[y as usize][x as usize])
-        {
+        while self.legal(x, y) && cont(&self.elems[y as usize][x as usize]) {
             x += dx;
             y += dy;
         }
 
-        self.get(x, y)
+        if self.legal(x, y) {
+            self.get(x as usize, y as usize)
+        } else {
+            None
+        }
+    }
+
+    pub fn map<T, F: FnMut(&Cell) -> T>(&self, mut f: F) -> Grid<T> {
+        Grid::new_with(self.row_size(), self.col_size(), |x, y| {
+            f(self.get(x as usize, y as usize).unwrap())
+        })
     }
 }
 

@@ -3,6 +3,8 @@ mod grid;
 mod utils;
 
 mod day_1;
+mod day_10;
+mod day_11;
 mod day_2;
 mod day_3;
 mod day_4;
@@ -10,9 +12,10 @@ mod day_5;
 mod day_6;
 mod day_7;
 mod day_8;
+mod day_9;
 
 fn main() {
-    let day = 8;
+    let day = 11;
     match day {
         1 => day_1::one().unwrap(),
         2 => day_2::two().unwrap(),
@@ -22,6 +25,9 @@ fn main() {
         6 => day_6::six().unwrap(),
         7 => day_7::seven().unwrap(),
         8 => day_8::eight().unwrap(),
-        _ => unreachable!()
+        9 => day_9::nine().unwrap(),
+        10 => day_10::ten().unwrap(),
+        11 => day_11::eleven().unwrap(),
+        _ => unreachable!(),
     }
 }
