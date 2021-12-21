@@ -110,11 +110,23 @@ impl<Cell> Grid<Cell> {
 
 impl<Cell: fmt::Display> fmt::Display for Grid<Cell> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut rows = 10;
         for row in &self.elems {
+            let mut cols = 10;
             for cell in row {
+                cols -= 1;
                 write!(f, "{}", cell)?;
+                if cols == 0 {
+                    write!(f, "|")?;
+                    cols = 10;
+                }
             }
+            rows -= 1;
             writeln!(f)?;
+            if rows == 0 {
+                writeln!(f, "-")?;
+                rows = 10;
+            }
         }
         write!(f, "")
     }
