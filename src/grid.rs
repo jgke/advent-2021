@@ -39,7 +39,7 @@ impl<Cell> Grid<Cell> {
         })
     }
 
-    fn legal(&self, x: i32, y: i32) -> bool {
+    pub fn legal(&self, x: i32, y: i32) -> bool {
         y >= 0 && y < self.col_size() as i32 && x >= 0 && x < self.row_size() as i32
     }
 
@@ -103,8 +103,14 @@ impl<Cell> Grid<Cell> {
 
     pub fn map<T, F: FnMut(&Cell) -> T>(&self, mut f: F) -> Grid<T> {
         Grid::new_with(self.row_size(), self.col_size(), |x, y| {
-            f(self.get(x as usize, y as usize).unwrap())
+            f(self.get(x, y).unwrap())
         })
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = &Cell> {
+        (0..self.col_size())
+            .flat_map(move |y| (0..self.row_size()).map(move |x| (x, y)))
+            .map(move |(x, y)| self.get(x, y).unwrap())
     }
 }
 
